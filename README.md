@@ -6,7 +6,7 @@
 
 ##### 准备工作：
 npm 安装响应的依赖库：
-    Node.js & npm ？ continue ：[dowoald Node.js](https://nodejs.org/en/)
+    Node.js & npm ？ continue ：[download Node.js](https://nodejs.org/en/)
 ```node
     npm install webpack vue-cli -g  // 全局安装方便使用
 ```
