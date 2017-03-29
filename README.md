@@ -24,7 +24,7 @@ npm 安装响应的依赖库：
 ? Project description A Vue.js project  // 项目介绍
 ? Author Sliver <wnhoper@gmail.com>     // 作者
 ? Vue build standalone                  // 构建独立
-? Install vue-router? No                // 路由,这里我建议练习模块开发时关闭路由
+? Install vue-router? No                // 路由,这里我选择关闭路由
 ? Use ESLint to lint your code? Yes     
 ? Pick an ESLint preset Standard         
 ? Setup unit tests with Karma + Mocha? No  // 一下两项为测试使用依赖 
@@ -59,7 +59,7 @@ npm 安装响应的依赖库：
     <div class="test">
         <h2> this is one test! </h2>
         <input type="text" v-model="msg">
-        <span>{{mes}}</span>
+        <span>{{msg}}</span>
     </div>
   </template> 
 
@@ -67,7 +67,7 @@ npm 安装响应的依赖库：
   exprot default {
     data () {   // 此处为坑点:data是一个函数,书写方式严格,fnName与括号见的空格不可省略
       return {  // 这里注意，在vue组件中,所有用到的信息都是data函数的返回值
-         mes: 'hello honey!'
+         msg: 'hello honey!'
       }
     } 
   }
