@@ -4,6 +4,13 @@
    最近几天在对自己写的词典项目进行**webpack**打包处理，该篇用以记录过程和踩过的坑。  
    词典项目基于**Vue-cli** ,所以也会是一个关于 vue_2.0和 webpack打包整个过程记录。
 
+#### 目录：
+ - 准备工作
+ - 构建环境
+ - 热身组件
+ - 
+
+
 ##### 准备工作：
 npm 安装响应的依赖库：
     Node.js & npm ？ continue ：[download Node.js](https://nodejs.org/en/)
@@ -92,7 +99,8 @@ npm 安装响应的依赖库：
 
 <script>
 import Hello from './components/Hello' 
-import test from './components/test.vue'  // 注册组件
+import test from './components/test.vue'  
+// 注册组件，注意避免使用[保留词]来注册组件，例如：head foot nav ...否则会报错
 
 export default {
   name: 'app',
