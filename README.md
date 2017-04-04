@@ -8,8 +8,19 @@
  - 准备工作
  - 构建环境
  - 热身组件
- - 
-
+ - ui依赖
+   + element.ui
+ - 依赖插件
+   + vue-router
+   + axios   
+   + vuex
+ - 模块拆分
+   + 头部编写
+   + 主题编写
+   + 其他模块
+ - CSS
+   + 整体布局
+   
 
 ##### 准备工作：
 npm 安装响应的依赖库：
@@ -18,7 +29,8 @@ npm 安装响应的依赖库：
     npm install webpack vue-cli -g  // 全局安装方便使用
 ```
 
-###### 构建 Vue-cli 项目环境
+
+##### 构建 Vue-cli 项目环境
 
 在这之前需要创建一个文件夹用以存放你项目： //  本例：Floder: node
 ```node
@@ -57,7 +69,7 @@ npm 安装响应的依赖库：
 * main.js 为所书写的js的的入口文件
 * 所有的组件必须先注册，才能使用，否则在终端中会报错（提示信息完善）
 
-##### 开工
+##### 热身组件
 先写一个打招呼的组件热热身吧，熟悉一下玩法
 在 `src` 目录下的`components`下创建一个`test.vue`开启第一次尝试吧
 ```
@@ -118,7 +130,113 @@ export default {
 ```
 然后看看你页面有没有发生变化呢？ 同时，细心的我们发现在终端中会一直提示你在干嘛
 ![time](/images/time.png) ![example](/images/example_1.png)  
-哈哈，恶趣味一下！  
-继续！我的目的是对我的字典进行模块化的改写。
+哈哈，恶趣味一下！继续！我的目的是对我的字典进行模块化的改写。其中需要依赖vue的多个插件帮助，所以一个个来熟悉吧！
+
+##### 依赖插件
+* [vue-router](https://router.vuejs.org/zh-cn) 
+  - 所谓的前后端分离的表现形式是什么？渐渐了解后发现核心就是路由
+  - 理一下思路：
+    + App.vue 为父组件我们所写的路有必然是存在其内部
+    + vue-router
+      - 创建好路由的路径, 引导路由组件正确渲染
+      - 目前有 home 和 about 两个组件
+      - ```<router-link to="/path">value</router-link> 和1.x有所区别```
+      - ```<router-view></router-view> 路由出口，路由到的组件会渲染到这里！```
+      - 思路理顺了！开始
+``` 
+// App.vue
+  <template>
+  <div id="app">
+    <h1>hello vue!</h1>
+    <div class="nav">
+      <ul>
+        <li><router-link to="/home">Home</router-link></li>
+        <li><router-link to="/about">Abuout</router-link></li>  
+      </ul>
+    </div>
+    <div class="main">
+      <router-view></router-view>     
+    </div>
+  </div>
+</template>
+<script> 
+import home from './components/Home.vue'
+import about from './components/About.vue'
+
+export default {
+  name: 'app',
+  components: {
+    home,
+    about
+  }  
+}
+</script>
+<style> </style>
+```
+
+```npm i vue-router --save-dev  //下载
+
+// main.js
+    import VueRouter from 'vue-router' 
+    Vue.use(VueRouter)
+
+    const router = new VueRouter({  // 创建一个vue-router 的实例 
+      routes: [                     // 2.x版本的vue-router的routes变更为数组对象  
+        {path: '/home', component: Home},  
+        {path: '/about', component: About},
+        {path: '*', redirect: '/home'}
+      ]                    
+    })
+
+    new Vue({
+      el: '#app',
+      router,
+      render: h=> h(App)   // vue 钩子 render函数，也是一个挂载势力的方法
+    })
+```
+那么接下来就是写Home.vue & About.vue
+
+##### 模块拆分
+- 字典头部标题，搜索框，搜索按钮，清楚搜索框按钮
+- 字典主题内容
+  + 单词释义及发音
+  + 单词例句
+- 历史记录
+- 主题切换
 
 
+
+
+
+
+
+##### 头部编写  
+在`components`下创建一个文件夹叫`header`里面创建一个组件`head.vue`
+头部内容： 一个标题，一个输入框，两个按钮，一个清楚输入内容，一个搜索按钮
+```
+  // head.vue 
+  <template>
+    <div class="header">
+      <h1>{{ title }}</h1>
+      <div class="header-content" v-model=" word ">
+        <input type="text">
+        <button>x</button>
+        <button>search</button>
+      </div>
+    </div>  
+  </template>
+  <script>
+  export default {
+    data () {
+      return {
+        title: 'Dictionary',
+        word: ''
+      }
+    }
+  }
+  </script>
+  <style>
+    ...
+  </style>
+```
+这时候也要在`App.vue`内部进行注册和使用。
