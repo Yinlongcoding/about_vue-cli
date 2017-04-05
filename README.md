@@ -133,7 +133,7 @@ export default {
 哈哈，恶趣味一下！继续！我的目的是对我的字典进行模块化的改写。其中需要依赖vue的多个插件帮助，所以一个个来熟悉吧！
 
 ##### 依赖插件
-* [vue-router](https://router.vuejs.org/zh-cn) 
+* [vue-router](https://router.vuejs.org/zh-cn) & [axios](https://www.npmjs.com/package/axios)
   - 所谓的前后端分离的表现形式是什么？渐渐了解后发现核心就是路由
   - 理一下思路：
     + App.vue 为父组件我们所写的路有必然是存在其内部
@@ -141,6 +141,7 @@ export default {
       - 创建好路由的路径, 引导路由组件正确渲染
       - 目前有 home 和 about 两个组件
       - ```<router-link to="/path">value</router-link> 和1.x有所区别```
+      - 在Home组件中，使用axios的来请求JSON数据
       - ```<router-view></router-view> 路由出口，路由到的组件会渲染到这里！```
       - 思路理顺了！开始
 ``` 
@@ -178,30 +179,95 @@ export default {
 
 // main.js
     import VueRouter from 'vue-router' 
+    impott axios from 'axios'  // ajax 请求依赖
     Vue.use(VueRouter)
+    Vue.prototype.$http = axios   
+    // axios 并不能使用vue.use()所以在vue的原型链上添加这个方法，这样每个组件都可以无障碍使用，可能会造成一些‘污染’，但显然利大于弊。
 
     const router = new VueRouter({  // 创建一个vue-router 的实例 
       routes: [                     // 2.x版本的vue-router的routes变更为数组对象  
         {path: '/home', component: Home},  
         {path: '/about', component: About},
-        {path: '*', redirect: '/home'}
+        {path: '*', redirect: '/home'}  // router 重定向， 
       ]                    
     })
 
     new Vue({
       el: '#app',
       router,
-      render: h=> h(App)   // vue 钩子 render函数，也是一个挂载势力的方法
+      render: h=> h(App)   // vue 钩子 render函数，也是一个挂载实例的方法
     })
 ```
 那么接下来就是写Home.vue & About.vue
+```
+ // Home.vue
+<template>
+  <div class="home">
+    <h1>{{ msg }}</h1>
+    <ul>
+      <li v-for="word in words">
+        {{ word.headword }}
+      </li>
+    </ul>
+  </div>
+</template>
+<script>
+export default {
+  name: 'home',
+  data () {
+    return {
+      msg: '单词列表',
+      words: '',
+    }
+  },
+  created: function () {
+    var self = this   
+    // 在axios中this的指向axios的promess对象，所以需要一个指向vue实例的指针
+    this.$http.get('http://damiao.io:5000/word/head')   
+        .then(function(res){
+          self.words = res.data 
+        })
+        .catch(error=>console.log(error))
+  }
+}
+</script>
+<style></style>
+```
+```
+About.vue
+<template>
+  <div class="about">
+    <ul>
+      <li v-for="list in lists"> {{ list.name }}</li>
+    </ul>
+  </div>
+</template>
+
+<script>
+
+export default {
+  name: 'about',
+  data () {
+    return {
+      msg: 'About',
+      lists: [
+        {name: '发音' },
+        {name: '音标' },
+        {name: '释义' },
+        {name: '例句' } 
+      ]
+    }
+  }
+}
+</script>
+```
+父组件向子组件传值利用```props```,反过来则需要用到 $on,$emit 之类的监听与执行
 
 ##### 模块拆分
 - 字典头部标题，搜索框，搜索按钮，清楚搜索框按钮
 - 字典主题内容
   + 单词释义及发音
   + 单词例句
-- 历史记录
 - 主题切换
 
 
