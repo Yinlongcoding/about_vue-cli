@@ -1,0 +1,38 @@
+### 构建 Vue-cli 项目环境
+
+在这之前需要创建一个文件夹用以存放你项目:
+```node
+    vue init webpack [name]
+? Generate project in current directory? Yes
+  This will install Vue 2.x version of the template.
+  For Vue 1.x use: vue init webpack#1.0 
+
+? Project name dictionary               // 项目名称
+? Project description A Vue.js project  // 项目介绍
+? Author Sliver <wnhoper@gmail.com>     // 作者
+? Vue build standalone                  // 打包
+? Install vue-router? No                // 路由,这里我选择关闭路由
+? Use ESLint to lint your code? Yes     
+? Pick an ESLint preset Standard         
+? Setup unit tests with Karma + Mocha? No  // 一下两项为测试使用依赖 
+? Setup e2e tests with Nightwatch? No
+
+   vue-cli · Generated "node".            // 这个是我根文件夹 app是其子集
+
+   To get started:                        
+   
+     npm install
+     npm run dev
+   
+   Documentation can be found at https://vuejs-templates.github.io/webpack
+
+    npm install   // 时间可能会久一点，耐心等待
+    npm run dev   
+    // 稍等片刻，vue 会创建一个server port:8080, 浏览器会主动打开, vue的热加载
+    即在代码中的每次更改都会同步到ui当中，如果出现错误，在终端内也会提示错误信息
+```
+![img](../images/cli.png) ![img](../images/floder.png)  
+** 在目录中需要注意一下几点 **
+* App.vue 为所有组件`注册`和`使用`的入口文件
+* main.js 为所书写的js的的入口文件
+* 所有的组件必须先注册，才能使用，否则在终端中会报错（提示信息完善）

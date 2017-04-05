@@ -1,0 +1,13 @@
+### ui依赖
+对比比较了很多 ui库，最终选择[element.ui](http://element.eleme.io/#/zh-CN)   原因：提升效率，对vue.2.x比较友好
+
+``` 
+npm i element-ui -S
+```
+
+引入：main.js
+```
+import ElementUl from 'element-ui'
+import 'element-ui/lib/theme-default/index.css'
+```
+在这里我是比较推荐‘按需加载’的，初次接触难免会出各种各样的问题，暂时不玩高端的，简单粗暴全部加载。
