@@ -9,13 +9,13 @@
 
 #### 目录：
  - 准备工作  
- - [构建环境](./recording/created_vue-cli.mdown)
- - [热身组件](./recording/learning_components.mdown)
- - [UI 依赖](./recording/about_ElementUi.mdown)
- - [依赖插件](./recording/about_links.mdown)
- - [模块拆分](./recording/modules_disassemble.mdown)
- - [邂逅问题](./recording/some_questions.mdown)
- - [项目总结](./recording/summary.mdown)  
+ - [构建环境](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/created_vue-cli.mdown)
+ - [热身组件](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/learning_components.mdown)
+ - [UI 依赖](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/about_ElementUi.mdown)
+ - [依赖插件](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/about_links.mdown)
+ - [模块拆分](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/modules_disassemble.mdown)
+ - [邂逅问题](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/some_questions.mdown)
+ - [项目总结](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/summary.mdown)  
 
 
 #### 准备工作：
