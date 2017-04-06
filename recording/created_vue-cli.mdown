@@ -32,14 +32,14 @@
     // 稍等片刻，vue 会创建一个server port:8080, 浏览器会主动打开, vue的热加载
     即在代码中的每次更改都会同步到ui当中，如果出现错误，在终端内也会提示错误信息
 ```
-* vue init webpack [name] name为可选项，可在根目录下穿件以name为命名的项目文件夹
+* vue init webpack [name] name为可选项，可在根目录下创建以name为命名的项目文件夹
 * vue-router  这里我选择关闭，初次尝试还是单纯点好，多了反而不利于理解
 * [ESLint](http://eslint.org/docs/rules/)
   - 代码书写国际标准，利于团队协作，bug排查，对于代码风格比较严谨
   - 对于tab,space,indent之类的有很细致的要求
   - 可以在.eslintconfig->rules 选项中添加/修改
-  - 时间紧，任务重，还要填坑本项目就不在这里花太多时间，在此迭代之时会使用标准
-* npm install vue-cli 所依赖的模块还是比较多的，事件会久一点
+  - 时间紧，任务重，还要填坑本项目就不在这里花太多时间，下次迭代之时会使用标准
+* npm install vue-cli 所依赖的模块还是比较多的，时间会久一点
 * npm run dev  自动打开浏览器，http:// localhost:8080
   - 端口占用： build 文件夹下dev-server.js -> prot可以定义
 
