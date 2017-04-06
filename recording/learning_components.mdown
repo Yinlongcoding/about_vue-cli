@@ -1,62 +1,119 @@
 ### 热身组件
-先写一个打招呼的组件热热身吧，熟悉一下玩法
-在 `src` 目录下的`components`下创建一个`test.vue`开启第一次尝试吧
-```
-// test.vue
-  <template>
-    <div class="test">
-        <h2> this is one test! </h2>
-        <input type="text" v-model="msg">
-        <span>{{msg}}</span>
-    </div>
-  </template> 
+在项目开始前，先写一个打招呼的组件热热身吧，熟悉一下玩法 `[注] *为特殊说明`  
+此处参考自[WiseWrong的博客](http://www.cnblogs.com/wisewrong/p/6266038.html)，这位前辈讲的很详细  
+`src` 目录下 `components` 下创建一个`header.vue`& `login.vue`开启第一次尝试吧
 
-  <script>  // 这里为组件添加必要data
-  exprot default {
-    data () {   // 此处为坑点:data是一个函数,书写方式严格,fnName与括号见的空格不可省略
-      return {  // 这里注意，在vue组件中,所有用到的信息都是data函数的返回值
-         msg: 'hello honey!'
-      }
-    } 
-  }
-  </script>
-  
-  <style>  // 这里为组件写样式
-    .test {
-      font-family: 'yahei';
-      color: #eac;
-    }
-  </style>
+header.vue
 ```
-接下来，我们需要到App.vue来改写点东西
+<template>
+  <header class="header">
+    <h1 class="logo">{{ nameLogo }}</h1> 
+    <ul>
+      <li v-for="nav in navs">{{ nav.li }}</li>
+    </ul>
+  </header>
+</template>
+
+<script>
+  export default {         *
+    name:'headiv',         *
+    props: ['nameLogo'],   *
+    data () {              *
+      return {
+        navs: [
+          {name: '主页'},
+          {name: '单词'},
+          {name: '音标'},
+          {name: '例句'},
+          {name: '发音'}
+        ]
+      }
+    }
+  }
+</script>
+
+<style>                   *
+  .header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between; 
+  }
+  .header h1 {
+    font-size: 1.5em;
+    color: #eac;
+  }
+  .header ul {
+    list-style: none;
+    display: flex;
+  }
+  .header ul li {
+    padding-left: 1em;
+  }
+</style>
+```
+
+login.vue
+```
+<template>
+    <div class="login">
+        <input v-model="userName" @change="setName">    *
+    </div>
+</template>
+
+<script>
+  export default {         
+    name: 'login',                                      
+    data () {
+      return {
+        userName: ''                        
+      }
+    },
+    methods: {     
+      setName: function () {   *
+        `this.$emit('changeUser', this.userName)`      
+      }
+    }
+  }
+</script>
+```
+
+App.vue
 ```
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <hello></hello>
-    <test></test>  // 使用组件
+    <headiv :nameLogo="user"></headiv>        
+    <login @changeUser="getUser"></login>   
+    <p>用户名：{{ user }}</p>       
   </div>
 </template>
 
 <script>
-import Hello from './components/Hello' 
-import test from './components/test.vue'  
-// 注册组件，注意避免使用[保留词]来注册组件，例如：head foot nav ...否则会报错
+import headiv from './components/header'     *
+import login from './components/login.vue'
 
 export default {
   name: 'app',
+  data () {
+    return {
+      user: ''
+    }
+  },
   components: {
-    Hello,
-    test    // 添加组件
+    headiv,
+    login
+  },
+  methods: {
+    getUser(msg) {
+      this.user = msg                        *
+    }
   }
 }
 </script>
-
-<style>
-...
-</style>
-
 ```
-然后看看你页面有没有发生变化呢？ 同时，细心的我们发现在终端中会一直提示你在干嘛
-![time](/images/time.png) ![example](/images/example_1.png)  
-哈哈，恶趣味一下！继续！我的目的是对我的字典进行模块化的改写。其中需要依赖vue的多个插件帮助，所以一个个来熟悉吧！
+
+* export default ES6语法，用于导出变量，函数，module ... 
+* name 可选，定义模块的标签名，[注]避免使用HTML原生标签名以及一些保留词
+* [props](https://cn.vuejs.org/v2/guide/components.html#Prop) 父组件向子组件传值 -- 父组件bind 其属性并赋值，然后传入子组件
+* data , vue中data是一个函数，所有的值皆为返回值
+* v-model， 双向绑定，input触发onchange事件时，将新的 user 通过双向绑定传给$data.user，随之p标签内容发生改变
+* $emit 触发事件时将数据返回给 callbackFn-> setUser, changeUser可认为是一个自定义的时间，目的就是传送数据到父组件，getUser()将数据接收
