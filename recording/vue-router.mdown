@@ -1,0 +1,190 @@
+## vue-router
+
+题记：
+为何我要选择将这三者放在一起来说？首先分开来写，必然是会漏掉一些必要的点，其次，不利于整理，会显得凌乱，这也是在正式开始开始写项目之前填坑，毕竟没有人看一遍文档不动手就知道怎么coding，古人言：‘纸上得来终觉浅，绝知此事要躬行’
+![img](../images/router.gif)
+
+### [vue-router](https://router.vuejs.org/zh-cn)  
+* 遇到过这么一个概念，“前后端分离”，我粗浅的理解：
+  - 共用一个url，改变的是 hash值
+  - 后端负责数据层，前端负责view层，在HTTP／Node／其他层面分离
+  - 后端提供接口，前端调用接口
+* 传统的a 标签`href`跳转显然并不太适用于vue且vue的组件是相对独立的
+* vue-router 则像是一条纽带，将个个独立的组件链接起来，形成因果(这词很玄乎)    
+* 安装: `npm install vue-router -D` 
+* 练习vue-router 最直观的莫过写一个导航栏  
+  - 在`src-components`下建立`Home.vue` & `News.vue`  
+  - 在`src`下建立`router`文件夹下有`router.js`
+  - 关系网：（联想二叉树）
+    + App.vue 下的`router-view`是其下 Home &  News 的路由出口 
+    + Home.vue 是其下主页的路由，同时也是它下面 `router-view`是其下`Login`&`Reg`的路由出口 
+    + News.vue 是其下新闻的路由，同时也是它下面`new`的路由出口
+* 一个经典的嵌套路由
+
+router.js
+```
+import Home from '../components/Home'
+import News from '../components/News'
+import Login from '../components/children/Login'
+import Reg from '../components/children/Reg'
+import New from '../components/children/New.vue'
+
+const routes = [              *
+  {
+    path: '/',
+    redirect: '/home' 
+  },{
+    path: '/home',
+    component: Home,          *
+    children: [               *
+      {
+        path: '/home/login',
+        component: Login
+      },{
+        path: '/home/reg',
+        component: Reg
+      }
+    ]
+  },{
+    path: '/news',
+    component: News,
+    children: [
+      {
+        path: '/news/new',
+        component: New
+      }
+    ]
+  }
+]
+
+export default routes
+```
+* routes 在 vue-router 2.0变更为一个数组对象
+* 嵌套路由，一如开始分析的关系网一样
+* '／' 表示的是根路径指向根路径
+* redirect：'componentName' 重定向，一开始的指针指向制定组件
+* component, 路由请求的子组件
+* children，子路由，弄清楚关系网，就可以在理论上实现无限的嵌套路由
+
+main.js
+```
+import Vue from 'vue'
+import App from './App'
+import VueRouter from 'vue-router'    *
+import routes from './router/router'  *
+
+Vue.use(VueRouter)
+
+const router = new VueRouter({
+  routes                              * 
+})
+
+Vue.config.productionTip = false
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  router,
+  render: h=>h(App)               
+})
+
+```
+* 引入vue-router，并创建实例router对象
+* router
+  - mode: 路由模式，默认是更改hash 值，会带一个`#`,也可选择HTML5 History模式，需有服务端支持
+  - routes：路由配置器
+
+App.vue
+``` 
+// App.vue
+  <template>
+  <div id="app">
+    <div>
+      <router-link to="/home">首页</router-link>   
+      <router-link to="/news">新闻</router-link>
+      <div class="main">
+        <router-view></router-view>                  
+      </div>    
+    </div>
+  </div>
+</template>
+<script> 
+export default {
+  name: 'app'  
+}
+</script>
+<style> </style>
+```
+
+Home.vue
+```
+<template>
+  <header class="header">
+    <router-link to="/home/login">登陆</router-link>   
+    <router-link to="/home/reg">注册</router-link>      
+    <div class="content">
+      <router-view></router-view>                       
+    </div>  
+  </header>
+</template>
+<script>
+  export default {
+    name: 'home'
+  }
+</script>
+```
+
+News.vue
+```
+<template>
+  <div class="news">
+    <h2>{{ msg }}</h2>
+    <router-link to="/news/new">点击查看</router-link>  
+    <div>
+      <router-view></router-view>
+    </div>
+  </div>
+</template>
+<script>
+  export default {
+    name: 'news',
+    data () {
+      return {
+        msg: '奇葩新闻报道'
+      }
+    }
+  }
+</script>
+```
+
+Login.vue 
+```
+<template>
+  <div class="login">
+    <h3>{{ msg }}</h3>
+    <label>
+      <span>账号：</span><input type="text"><br>
+      <span>密码：</span><input type="text">
+    </label>
+    <div class="buts">
+      <button>登陆</button>
+      <button>忘记密码</button> 
+    </div>
+  </div>
+</template>
+<script>
+  export default {
+    name: 'login',
+    data () {
+      return {
+        msg: '登陆界面'
+      }
+    }
+  }
+</script>
+```
+
+其他的子组件就暂时省略了，详细代码可以在[这里](https://github.com/Yinlongcoding/about_webpack.github.io)查看
+
+
+ 
