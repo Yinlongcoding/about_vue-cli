@@ -1,1 +1,69 @@
-axios
+## axios
+
+题记:  
+* vue.1.x版本官方推荐 ajax请求插件是`vue-resource`  
+* 2.x版本vue团队发现对于 网络请求方面并没有需要整合的部分，2.x推荐  [axios](https://www.npmjs.com/package/axios)
+* axios是一个轻量级的HTTP请求插件，内部封装了ES6 Promess对象，更加直观的异步请求
+* 综合 `vue-router` & `axios` 做一个小练习
+* 安装`npm i axios`
+* `src-components-children`下添加`search.vue`
+
+
+![img](../images/axios.gif)  
+
+
+main.js 
+```
+import Axios from 'axios'
+Vue.prototype.$http = axios
+```
+* axios 不同于 vue-resource 不能用 `use`方法
+* 将axios添加在vue实例的原型上，在任意组件内部都可使用
+
+search.vue
+```
+<template>
+    <div class="search">
+        <input type="text" @change="search" v-model="word">
+        <button @click="search">search</button>
+        <div v-for="word in results">
+            <p>{{ word.headword }}</p>
+            <div v-for="sense in word.senses">
+                <p v-for="def in sense.defs">{{ def.defCn }}</p>
+            </div> 
+        </div>
+    </div>
+</template>
+<script>
+    export default {
+        name: 'search',
+        data () {
+            return {
+                word: '',
+                results: ''
+            }
+        },
+        methods: {
+            search () {
+                let self = this
+                let word = this.word.toLowerCase()
+                this.$http.get('http://damiao.io:5000/word/'+word)
+                     .then(function(res) {
+                        self.results = res.data
+                     })
+                     .catch(function(error){
+                        console.log(error)
+                     })
+            }
+        }
+    }
+</script>
+```
+* this.$http.get(url) 请求JSON数据
+* axios 封装了promess，调用方法
+    +  .then(callback) 异步请求
+    +  .catch(callback) catch 抛出请求的错误信息
+    +  关于self，在内部也是可以使用尖头函数，防止this指向混乱，强制将指针指向vue实例 
+* 更多的API还是去axios的官网查询
+
+

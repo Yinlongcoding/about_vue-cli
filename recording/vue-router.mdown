@@ -1,7 +1,7 @@
 ## vue-router
 
 题记：
-为何我要选择将这三者放在一起来说？首先分开来写，必然是会漏掉一些必要的点，其次，不利于整理，会显得凌乱，这也是在正式开始开始写项目之前填坑，毕竟没有人看一遍文档不动手就知道怎么coding，古人言：‘纸上得来终觉浅，绝知此事要躬行’
+这是在正式开始开始写项目之前填坑，毕竟没有人看一遍文档不动手就知道怎么coding，古人言：‘纸上得来终觉浅，绝知此事要躬行’
 ![img](../images/router.gif)
 
 ### [vue-router](https://router.vuejs.org/zh-cn)  
@@ -184,7 +184,7 @@ Login.vue
 </script>
 ```
 
-其他的子组件就暂时省略了，详细代码可以在[这里](https://github.com/Yinlongcoding/about_webpack.github.io)查看
+其他的子组件就暂时省略了，详细代码可以在[这里](https://github.com/Yinlongcoding/about_webpack.github.io/tree/master/test-code/v-router/src)查看
 
 
  
