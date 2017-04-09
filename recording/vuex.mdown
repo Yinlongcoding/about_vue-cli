@@ -11,6 +11,8 @@
 * HOW vuex?
   - 数据层次过深，可在Store内做预处理
   - mutations 封装大部分数据交互的方法，自给自足的提供接口
+  - actions 异步提交mutations，交互变的轻而易举
+  - getters 获取数据状态摆脱暴力 `v-for * n`
   - 使用接口，将需要的数据展现在view层中
 * 多说无益，手下见真章.
 
@@ -161,3 +163,223 @@ computed: {
     }
 }
 ```
+接来下，制作一个todoMvc 文档案例
+![img](../images/todo.gif)
+分析：
+* 需要复用的模块只有中间的 todo-lists，这是唯一的一个模块 
+* 在整个事件流中，基本不存在异步事件，所以可以很愉快的使用mutations
+* 分析整个todomvc的时间流，对vuex 进一步了解
+
+store.vue
+```
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+Vue.use(Vuex)
+
+const state = {
+    todos: []
+}
+        
+const mutations = {
+    addTodo (state, {text}) {
+        state.todos.push({
+            text: text, 
+            done: false
+        })
+    },
+    deleteTodo (state, {todo}) {
+        state.todos.splice(state.todos.indexOf(todo), 1)
+    },
+    toggleTodo (state, {todo}) {
+        todo.done = !todo.done
+    },
+    editTodo (state, {todo, value}) {
+        todo.text = value
+    },
+    toggleAll (state, { done }) {
+        if(state.todos.some( todo => todo.done === false)) {
+            state.todos.forEach((todo=> todo.done = true))
+        } else {
+            state.todos.forEach((todo=> todo.done = false))
+        }
+    },
+    clearCompleted (state) {
+        state.todos = state.todos.filter(todo => !todo.done)
+    }
+}
+
+export default new Vuex.Store({
+    state,
+    mutations   
+})
+```
+
+App.vue
+```
+<template>
+<div id="app">
+  <section class="todoapp">
+    <header class="header">
+      <h1>todos</h1>
+        <input type="checkbox" 
+        id="toggle-all"
+        v-show="todos.length"
+        @change="toggleAll">
+        <label for="toggle-all"></label>
+      <input class="new-todo"
+        autofocus
+        autocomplete="off"
+        placeholder="What needs to be done?"
+        @keyup.enter="addTodo">
+    </header>
+    
+    <section class="main" v-show="todos.length">
+      <ul class="todo-list">
+        <todoList v-for="(todo,index) in filteredTodos" 
+          :todo="todo" :key="index"></todoList>
+      </ul> 
+    </section>
+    
+    <section class="footer">
+      <span class="todo-count">
+        <strong>{{ remaining }}</strong> 
+        {{ remaining | pluralize('item') }} left
+      </span>
+      <ul class="filters">
+        <li v-for="(val, key) in filters">
+          <a href="#"
+            :class="{selected: visibility === key}"
+            @click="visibility = key">{{ key | capitalize }}</a>
+        </li>
+      </ul>
+      <button class="clear-completed"
+        v-show="todos.length > remaining"
+        @click="clearCompleted">Clear completed</button>
+    </section>
+  </section>
+</div>
+</template>
+
+<script>
+import todoList from './components/todoList.vue'
+import { mapMutations } from 'vuex'
+
+const filters = {
+  all: todos => todos,
+  active: todos => todos.filter(todo => !todo.done),
+  completed: todos => todos.filter(todo => todo.done)
+}
+
+export default {
+    name: 'app',
+    components: {
+      todoList
+    },
+    data () {
+      return {
+        visibility: 'all',
+        filters: filters
+      }
+    },
+    computed: {
+      todos () {
+        return this.$store.state.todos
+      },
+      filteredTodos () {
+        return filters[this.visibility](this.todos)
+      },
+      remaining () {
+        return this.todos.filter((todo) => !todo.done ).length
+      }
+    },
+    methods: {
+      addTodo (el) {
+        let text = el.target.value
+        if(text.trim()) {
+          this.$store.commit('addTodo', { text })
+        } 
+          el.target.value = ''
+      },
+    ...mapMutations([
+      'toggleAll',
+      'clearCompleted'
+    ])  
+    },
+    filters: {
+      pluralize: (number, word) => number <= 1 ? word : (word + 's'),
+      capitalize: key => key.charAt(0).toUpperCase() + key.slice(1)
+    }
+}
+</script>
+```
+
+todoList.vue
+```
+<template>
+  <li class="todo" :class="{ completed: todo.done, editing: editing }">
+    <div class="view">
+      <input type="checkbox" 
+        class="toggle"
+        :checked="todo.done"
+        @change="toggleTodo({ todo: todo })">
+      <label v-text="todo.text" 
+        @dblclick="editing = true"></label>
+      <button class="destroy"
+        @click="deleteTodo({ todo: todo })"></button>
+    </div>
+    <input class="edit"
+      v-show="editing"
+      v-focus="editing"
+      :value="todo.text"
+      @keyup.enter="doneEdit"
+      @keyup.esc="canceEdit"
+      @blur="doneEdit">
+  </li>
+</template>
+
+<script>
+import { mapMutations } from 'vuex'  
+
+  export default {
+    name: 'todoList',
+    props: ['todo'],
+    data () {
+      return {
+        editing: false
+      }
+    },
+    directives: {
+      focus (el, { value }, { context }) {
+        if(value) {
+          context.$nextTick(()=>{
+            el.focus()
+          })
+        }
+      }
+    },
+    methods: {
+      ...mapMutations([
+        'editTodo',
+        'toggleTodo',
+        'deleteTodo'  
+      ]),
+      doneEdit (el) {
+        let value = el.target.value.trim()
+        let { todo } = this 
+        if(!value) {
+          this.deleteTodo({todo})
+        } else if (this.editing) {
+          this.editTodo({todo, value})
+          this.editing = false 
+        }
+      },
+      canceEdit (el) {
+        el.target.value = this.todo.text
+        this.editing = false
+      }
+    }
+  }
+</script>
+```
+
