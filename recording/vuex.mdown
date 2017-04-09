@@ -1,11 +1,163 @@
-* 什么是vuex？
-  - 我的理解就是前端的数据库，可以让你在任意组件内获取数据库信息
-* 为什么要用？
-  - 在axios获取到json 数据的时候，不仅头大，数组类对象需要深层便利才能拿到想要的值，如果暴力的用 v-for 也是可以的，显然这将失去模块化的意义，同时代码的耦合度也会提升，显然不是我想要的。
-  - vuex 可以将我获取到的信息储存起来，放在vue的vuex实例里，同时封装了多个方法，方便平行组件之间的信息传输，单纯的数据流通远比操作dom来的要优雅很多
-* 具体体现
-  - 查询单词获取数据，储存与 vuex.store.state对象中
-  - vuex.mutations 封装大部分数据交互的方法，自给自足的提供接口。
+## Vuex
+题记：在填这个坑的时候。痛苦，是唯一的回忆。爽，是最后的结果。
+* WHAT [vuex](https://vuex.vuejs.org/zh-cn/)？
+    - 思想继承自[React](https://facebook.github.io/react/)-[Redux](http://redux.js.org/)
+    - 前面提到过`vue-router`为组件提供了因果，但这只是父与子的联系
+    - vuex可以为平行组件之间的数据交互提供一条便捷的道路
+* WHY vuex？
+  - 广泛性：状态管理器，所有的数据和方法全部放在vuex的对象里，所有组件皆可调用
+  - 代码解耦：HTML和JavaScript低耦合，提升性能  
+  - 面向对象：储存数据，封装方法，提供接口，多态方法，外部调用
+* HOW vuex?
+  - 数据层次过深，可在Store内做预处理
+  - mutations 封装大部分数据交互的方法，自给自足的提供接口
   - 使用接口，将需要的数据展现在view层中
-* 在填vuex的坑的时候很痛苦，官方的文档里面居然说要知晓redux的情况下才能看懂，我能说什么呢？我也很绝望。慢慢啃
-* 最终我决定还是综合  vue-router axios vuex 来做一个有趣的东西
+* 多说无益，手下见真章.
+
+本次采取一个由浅入深的方式来学习，从一个简单的例子开始吧！(本例来源:vuex文档 [Counters](https://vuex.vuejs.org/zh-cn/getting-started.html))  
+下载：`npm install vuex`，接下来，一张关系图，描述vuex这个对象。
+![img](../images/vuex.png)
+* 多个视图依赖于同一状态
+* -来自不同视图的行为需要变更同一状态”  
+![img](../images/counter.gif)  
+
+`src`目录下`vuex`文件夹下`store.js`
+store.js
+```
+import Vue form 'vue'
+improt Vuex from 'vuex'
+
+Vue.use(Vuex)
+
+const state = {    
+    count: 0
+}
+
+const mutations = {
+    increment (state) {
+     state.count++ 
+    },
+    decrement (state) {
+     state.count-- 
+    }
+}
+
+const actions = {
+    increment: ({commit}) => commit('increment'),
+    decrement: ({commit}) => commit('decrement'),
+    incrementIfOdd ({commit, state}) {
+        if((state.count + 1) % 2 === 0) {
+            commit('increment')
+        }
+    },
+    incrementIfAsync ({commit}) {
+        if((state.count + 1) % 2) {
+            commit('increment')
+        }   
+    }
+}
+
+const getter = {
+    evenOrOdd: state => state.count % 2 === 0 ? 'even' : 'odd'
+}
+
+export default new Vuex.Store({
+    state,
+    getters,
+    actions,
+    mutations
+})
+```
+* 代码中不难看出，Store就是那颗状态管理树，它包含了
+    - 数据库 [state]
+        + 所有的数据以及数据状态都讲存放在这里，所有的组件都可访问到数据
+    - 变更方案 [mutations]
+        + mutaitons 和事件极其类似，但是它`必须是同步函数`
+        + [vue‘s devtools](https://github.com/vuejs/vue-devtools) 在mutations 触发时都会记录变化前后的状态，存在回调函数的时候，devtools并不知道回调函数是否执行，这给纪录状态带来不必要的麻烦
+    - 执行方案 [actions]
+        + 所有的异步执行事件全部放在actions里，就避免devtools懵逼的情况
+        + 在actions里，需要显式的去`commit`一次mutaitions
+    - 获取状态 [getters]
+        + 数据可以保存，当谈也是可以获取的
+        + getters 可以在为所有的组件提供获取数据及数据状态的服务
+
+main.js
+```
+import Vuex from 'vuex'
+improt store from './vuex/store'
+
+new Vue({
+    el: '#app',
+    store,
+    render: h=>h(App)
+})
+```
+
+App.vue
+```
+<template>
+  <div id="app">
+    <el-row type="flex" justify="center">
+      <Count></Count>
+    </el-row> 
+  </div>
+</template>
+
+<script>
+import Count from './components/Count.vue'
+
+export default {
+    name: 'app',
+    components: {
+      Count
+    }
+}
+</script>
+```
+
+Count.vue
+```
+<template>
+    <el-col>
+        <p>Click: {{ $store.state.count }}</p>
+        <p>Count is {{ evenOrOdd }}</p>
+        <el-button type="primary" @click="increment">Increment</el-button>
+        <el-button type="primary" @click="decrement">Decrement</el-button>
+        <el-button type="primary" @click="incrementIfOdd">Odd</el-button>
+        <el-button type="primary" @click="incrementIfAsync">Async</el-button>
+    </el-col>
+</template>
+<script>
+import {mapGetters, mapActions} from 'vuex'
+
+
+export default {
+    name: 'Count',
+    computed: mapGetters([  
+        'evenOrOdd'
+    ]),
+    methods: mapActions([
+        'increment',
+        'decrement',
+        'incrementIfOdd',
+        'incrementIfAsync'
+    ])
+}
+</script>
+```
+* UI方面由element.ui 支持，也算是在尝试
+* 关于‘$’，不同于jQuery，这个$是可以获取到挂载在vue实例上的对象
+* mapGetters, mapActions, mapSate 为对应对象的辅助函数
+    - 和原生的map 很像，表示一种映射：
+
+```
+computed: mapGetters([
+    'evenOrOdd'
+])
+// the same as 
+computed: {
+    eventOrOdd () {
+        return this.$store.getters.evenOrOdd
+    }
+}
+```
