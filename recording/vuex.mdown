@@ -150,7 +150,7 @@ export default {
 * UI方面由element.ui 支持，也算是在尝试
 * 关于‘$’，不同于jQuery，这个$是可以获取到挂载在vue实例上的对象
 * mapGetters, mapActions, mapSate 为对应对象的辅助函数
-    - 和原生的map 很像，表示一种映射：
+    - 和原生的map 很像，表示一种映射:
 
 ```
 computed: mapGetters([
@@ -177,24 +177,24 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-const state = {
+const state = {                                         *
     todos: []
 }
         
 const mutations = {
-    addTodo (state, {text}) {
+    addTodo (state, {text}) {                           *    
         state.todos.push({
             text: text, 
-            done: false
+            done: false                                         
         })
     },
     deleteTodo (state, {todo}) {
-        state.todos.splice(state.todos.indexOf(todo), 1)
+        state.todos.splice(state.todos.indexOf(todo), 1)  
     },
     toggleTodo (state, {todo}) {
         todo.done = !todo.done
     },
-    editTodo (state, {todo, value}) {
+    editTodo (state, {todo, value}) {                  *
         todo.text = value
     },
     toggleAll (state, { done }) {
@@ -214,6 +214,12 @@ export default new Vuex.Store({
     mutations   
 })
 ```
+* state 如上面的例子一样，数组对象
+* 关于传值，JavaScript 接受的参数类型具有多元化
+* ...[[Object,string],[Object,array],[Object,functiong],[Object, object],...]
+* mutations 下的commitFn接受state为第一个参数，({object}) 这种参数为一个对象
+* 例如：{text} -> {text:'输入内容', done: boolean } 代表输入内容和完成状态
+* {todo, value} -> {todo: target.todoList, value} 当前更改的list对象，以及更改内容
 
 App.vue
 ```
@@ -226,18 +232,18 @@ App.vue
         id="toggle-all"
         v-show="todos.length"
         @change="toggleAll">
-        <label for="toggle-all"></label>
+        <label for="toggle-all"></label>                 
       <input class="new-todo"
         autofocus
         autocomplete="off"
-        placeholder="What needs to be done?"
+        placeholder="What needs to be done?" 
         @keyup.enter="addTodo">
     </header>
     
     <section class="main" v-show="todos.length">
       <ul class="todo-list">
         <todoList v-for="(todo,index) in filteredTodos" 
-          :todo="todo" :key="index"></todoList>
+          :todo="todo" :key="index"></todoList>                   *
       </ul> 
     </section>
     
@@ -265,7 +271,7 @@ App.vue
 import todoList from './components/todoList.vue'
 import { mapMutations } from 'vuex'
 
-const filters = {
+const filters = {                                           * 
   all: todos => todos,
   active: todos => todos.filter(todo => !todo.done),
   completed: todos => todos.filter(todo => todo.done)
@@ -278,16 +284,16 @@ export default {
     },
     data () {
       return {
-        visibility: 'all',
+        visibility: 'all',                                 *
         filters: filters
       }
     },
-    computed: {
+    computed: {                                            *
       todos () {
         return this.$store.state.todos
       },
       filteredTodos () {
-        return filters[this.visibility](this.todos)
+        return filters[this.visibility](this.todos)        *
       },
       remaining () {
         return this.todos.filter((todo) => !todo.done ).length
@@ -295,29 +301,40 @@ export default {
     },
     methods: {
       addTodo (el) {
-        let text = el.target.value
-        if(text.trim()) {
-          this.$store.commit('addTodo', { text })
+        let text = el.target.value     
+        if(text.trim()) {                              
+          this.$store.commit('addTodo', { text })   
         } 
-          el.target.value = ''
+          el.target.value = ''                  
       },
-    ...mapMutations([
+    ...mapMutations([                                     *
       'toggleAll',
       'clearCompleted'
     ])  
     },
     filters: {
-      pluralize: (number, word) => number <= 1 ? word : (word + 's'),
-      capitalize: key => key.charAt(0).toUpperCase() + key.slice(1)
+      pluralize: (number, word) => number <= 1 ? word : (word + 's'),  
+      capitalize: key => key.charAt(0).toUpperCase() + key.slice(1)   
     }
 }
 </script>
 ```
+* 疑问：为什么数据交互不用actions ？ 
+  - 代码，不难发现，改变的只有数据的状态，内部并没有回调函数。
+* 为什么不用getters 来获取数据状态？
+  - 这只是一个选择问题，当然可以用，但是在这里有更好的选择-> filter([vue过滤器](http://es6.ruanyifeng.com/#docs/array))在语义化与性能方面一样很出色
+* filters对象是在对数据状态做一个预处理，映射给visibility
+* computed {} 前面说过，vuex可以在为所有组件提供数据库，但是却需要组件自己去接收
+* `return filters[visibility](todo)`  这看起来很复杂，细致分析一下
+  - fiters对象的keys和 visibility的value 是一种映射关系
+  - 意思：告诉`filters`以当前`visibility`的值来对数据状态做预处理
+* ...mapMuations [ES6 数组解构](http://es6.ruanyifeng.com/#docs/array)
+* `:key="index"` v-for默认使用`就地复用策略`，添加／删除组件时vue时如果做到组件顺序和状态不会混乱的？当然这是比较深层的问题了，为每个v-for产生的组件提供一个`唯一的key,以便它能跟踪每个节点的身份，从而重用和重新排序现有元素`，详情参见官方文档 [key](https://cn.vuejs.org/v2/guide/list.html#key)
 
 todoList.vue
 ```
 <template>
-  <li class="todo" :class="{ completed: todo.done, editing: editing }">
+  <li class="todo" :class="{ completed: todo.done, editing: editing }">  
     <div class="view">
       <input type="checkbox" 
         class="toggle"
@@ -326,7 +343,7 @@ todoList.vue
       <label v-text="todo.text" 
         @dblclick="editing = true"></label>
       <button class="destroy"
-        @click="deleteTodo({ todo: todo })"></button>
+        @click="deleteTodo({ todo: todo })"></button>  *
     </div>
     <input class="edit"
       v-show="editing"
@@ -349,7 +366,7 @@ import { mapMutations } from 'vuex'
         editing: false
       }
     },
-    directives: {
+    directives: {                                       *
       focus (el, { value }, { context }) {
         if(value) {
           context.$nextTick(()=>{
@@ -365,7 +382,7 @@ import { mapMutations } from 'vuex'
         'deleteTodo'  
       ]),
       doneEdit (el) {
-        let value = el.target.value.trim()
+        let value = el.target.value.trim()               
         let { todo } = this 
         if(!value) {
           this.deleteTodo({todo})
@@ -382,4 +399,11 @@ import { mapMutations } from 'vuex'
   }
 </script>
 ```
+* 前言中，父子组件之间的因果就是[prop对象](https://cn.vuejs.org/v2/guide/components.html#Prop)，父组件将值传递给子组件就是依靠prop来传递
+* `{(todo: todo)}` 又是一种头疼的传参方式，在这之前回到store.muataions看看这个参数所属的方案需要的形参是什么
+  - `deleteTodo (state, {todo})` 这下就很明确了
+  - 把当前子组件的数据状态显式传递{todo}这个对象
+* [directives](https://cn.vuejs.org/v2/api/#Vue-directive) vue的自定义指令
+* [$nextTick](https://cn.vuejs.org/v2/api/#Vue-nextTick)`在下次 DOM 更新循环结束之后执行延迟回调。在修改数据之后立即使用这个方法，获取更新后的 DOM`
 
+### 问题来袭：HTTP获取的数据怎么保存进state里？
