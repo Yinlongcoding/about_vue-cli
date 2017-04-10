@@ -13,9 +13,9 @@
  - [热身组件](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/learning_components.mdown)
  - [UI 依赖](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/about_ElementUi.mdown)
  - 依赖插件
-     + [vue-router]()
-     + [axios]()
-     + [vuex]()
+     + [vue-router](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/vue-router.mdown)
+     + [axios](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/axios.mdown)
+     + [vuex](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/vuex.mdown)
  - [模块拆分](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/modules_disassemble.mdown)
  - [邂逅问题](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/some_questions.mdown)
  - [项目总结](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/summary.mdown)  

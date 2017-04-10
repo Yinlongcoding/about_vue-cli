@@ -406,4 +406,88 @@ import { mapMutations } from 'vuex'
 * [directives](https://cn.vuejs.org/v2/api/#Vue-directive) vue的自定义指令
 * [$nextTick](https://cn.vuejs.org/v2/api/#Vue-nextTick)`在下次 DOM 更新循环结束之后执行延迟回调。在修改数据之后立即使用这个方法，获取更新后的 DOM`
 
-### 问题来袭：HTTP获取的数据怎么保存进state里？
+### 问题来袭：HTTP请求获取的数据怎么保存进state里？
+![img](../images/vuexHttp.gif)
+
+store.js
+```
+import Vue from 'vue'
+import Vuex from 'vuex'
+import axios from 'axios'
+
+Vue.use(Vuex)
+
+const state = {
+  defCn: ''
+}
+
+const mutations = {
+  getWord: function (state, data) {
+    state.defCn = data[0].senses[0].defs
+  }
+}
+
+const actions = {
+  search ({commit}, text) {
+    let word = text.target.value
+    axios.get('http://damiao.io:5000/word/'+word)
+      .then(function(res) {
+        let data = res.data
+        commit('getWord', data)
+      })
+  }
+}
+
+export default new Vuex.Store({
+  state,
+  mutations,
+  actions,
+})
+```
+* ajax 为异步请求，那必然是写在actives里执行
+* 通过传参的方式，将response 传入 mutations, 对获取到的数据进行预处理，存放在state内
+
+App.vue
+```
+<template>
+  <div id="app">
+    <el-row type="flex" justify="center">
+      <el-col :span="15">
+        <el-input icon="search" 
+          placeholder="请输入单词"
+          @keyup.enter.native="search"></el-input>
+      </el-col>
+    </el-row>
+    
+    <el-row type="flex" justify="center">
+      <el-col :span="15">
+        <el-collapse>
+          <el-collapse-item v-for="(word, index) in defCn" 
+          :title="word.defCn" 
+          :key="index"> 
+          <div v-for="(example, index) in word.examples" :key="index">
+            <p>{{ example.en }}</p>
+            <p>{{ example.cn }}</p>
+          </div>           
+          </el-collapse-item>
+        </el-collapse>
+      </el-col>
+    </el-row>
+  </div>
+</template>
+
+<script>
+import { mapActions, mapState } from 'vuex'
+
+export default {
+  name:'App',
+  computed: mapState([
+      'defCn'
+  ]),
+  methods: mapActions([
+    'search'
+    ])
+}
+</script>
+```
+* v-on: handler.native  vue实现的冒泡
