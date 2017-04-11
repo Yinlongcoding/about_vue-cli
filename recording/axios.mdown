@@ -1,9 +1,9 @@
 ## axios
 
 题记:  
-* vue.1.x版本官方推荐 HTTP请求插件是`vue-resource`  
-* 2.x版本vue团队发现对于 网络请求方面并没有需要整合的部分，2.x推荐  [axios](https://www.npmjs.com/package/axios)
-* axios是一个轻量级的HTTP请求插件，内部封装了ES6 Promess对象，更加直观的异步请求
+* vue.1.x版本官方推荐 ajax请求插件是`vue-resource`  
+* 2.x版本vue团队发现对于http请求方面并没有需要整合的部分，2.x推荐  [axios](https://www.npmjs.com/package/axios)
+* axios是一个轻量级的ajax请求插件，内部封装了ES6 Promess对象，更加直观的异步请求
 * 综合 `vue-router` & `axios` 做一个小练习
 * 安装:`npm i axios`
 * `src-components-children`下添加`search.vue`
@@ -63,7 +63,7 @@ search.vue
 * axios 封装了promess，调用方法
     +  .then(callback) 异步请求
     +  .catch(callback) catch 抛出请求的错误信息
-    +  关于self，在内部也是可以使用尖头函数，防止this指向混乱，强制将指针指向vue实例 
+    +  关于self，在内部也是可以使用箭头函数，防止this指向混乱，强制将指针指向vue实例 
 * 更多的API还是去axios的官网查询
 
 

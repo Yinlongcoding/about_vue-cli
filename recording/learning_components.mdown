@@ -1,7 +1,7 @@
 ### 热身组件
-在项目开始前，先写一个打招呼的组件热热身吧，熟悉一下玩法 `[注] *为特殊说明`  
-此处参考自[WiseWrong的博客](http://www.cnblogs.com/wisewrong/p/6266038.html)，这位前辈讲的很详细  
-`src` 目录下 `components` 下创建一个`header.vue`& `login.vue`开启第一次尝试吧
+在项目开始前，先写一个打招呼的组件热热身吧，熟悉一下玩法 `[注] *为特殊说明`    
+
+`src` 目录下 `components` 下创建一个`header.vue` & `login.vue`
 
 header.vue
 ```
@@ -69,8 +69,8 @@ login.vue
       }
     },
     methods: {     
-      setName: function () {   *
-        `this.$emit('changeUser', this.userName)`      
+      setName: function () {                             *
+        this.$emit('changeUser', this.userName)      
       }
     }
   }
@@ -113,7 +113,7 @@ export default {
 
 * export default ES6语法，用于导出变量，函数，module ... 
 * name 可选，定义模块的标签名，[注]避免使用HTML原生标签名以及一些保留词
-* [props](https://cn.vuejs.org/v2/guide/components.html#Prop) 父组件向子组件传值 -- 父组件bind 其属性并赋值，然后传入子组件
-* data , vue中data是一个函数，所有的值皆为返回值
-* v-model， 双向绑定，input触发onchange事件时，将新的 user 通过双向绑定传给$data.user，随之p标签内容发生改变
-* $emit 触发事件时将数据返回给 callbackFn-> setUser, changeUser可认为是一个自定义的时间，目的就是传送数据到父组件，getUser()将数据接收
+* [props](https://cn.vuejs.org/v2/guide/components.html#Prop) 父组件向子组件传值
+* data , vue中data是一个`函数`，所有的值皆为返回值
+* v-model  双向绑定，input触发change事件时，将新的 user通过双向绑定传给$data.user，随之p标签内容发生改变
+* $emit 触发事件时将数据返回给 callbackFn-> setUser, changeUser可认为是一个自定义的事件，目的就是传送数据到父组件，getUser()将数据接收

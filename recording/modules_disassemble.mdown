@@ -1,9 +1,0 @@
-###  模块拆分
-
-* header
-* main
-    - mean
-    - examples
-* outside
-    - article
-    - outside

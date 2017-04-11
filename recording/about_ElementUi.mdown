@@ -10,4 +10,4 @@ npm i element-ui -S
 import ElementUl from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 ```
-在这里我是比较推荐‘按需加载’的，初次接触难免会出各种各样的问题，暂时不玩高端的，简单粗暴全部加载。
+初步学习时，为防止一些不必要的麻烦，选择全部加载，待熟练之后可选择按需加载
