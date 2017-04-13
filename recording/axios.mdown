@@ -3,7 +3,7 @@
 题记:  
 * vue.1.x版本官方推荐 ajax请求插件是`vue-resource`  
 * 2.x版本vue团队发现对于http请求方面并没有需要整合的部分，2.x推荐  [axios](https://www.npmjs.com/package/axios)
-* axios是一个轻量级的ajax请求插件，内部封装了ES6 Promess对象，更加直观的异步请求
+* axios是一个轻量级的ajax请求插件，内部封装了ES6 Promise对象，更加直观的异步请求
 * 综合 `vue-router` & `axios` 做一个小练习
 * 安装:`npm i axios`
 * `src-components-children`下添加`search.vue`
