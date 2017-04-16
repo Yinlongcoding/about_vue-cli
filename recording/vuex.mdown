@@ -444,7 +444,7 @@ export default new Vuex.Store({
   actions,
 })
 ```
-* ajax 为异步请求，那必然是写在actives里执行
+* ajax 为异步请求，那必然是写在actions里执行
 * 通过传参的方式，将response 传入 mutations, 对获取到的数据进行预处理，存放在state内
 
 App.vue
