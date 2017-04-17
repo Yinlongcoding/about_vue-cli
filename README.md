@@ -8,6 +8,7 @@
 `Vue.js, Vue-router, Vuex, Axios, Element.ui`  
 改写项目：[Dictionary_2.0](http://sliver.site/dictionary.github.io/dictionary.html)
 
+![img](./images/dic3.gif)
 
 #### 目录：
  - Hello Vue
@@ -20,6 +21,7 @@
      + [axios](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/axios.mdown)
      + [vuex](https://github.com/Yinlongcoding/about_webpack.github.io/blob/master/recording/vuex.mdown) 
 
+项目地址：https://github.com/Yinlongcoding/dictionary3.github.io
 
 #### Hello Vue
 * [VueJs](https://cn.vuejs.org/) 渐进式，JavaScript 框架
